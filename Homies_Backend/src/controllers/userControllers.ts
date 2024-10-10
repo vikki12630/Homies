@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { IUser, User } from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { access } from "fs";
 
 /*
 @signup user
@@ -86,15 +87,17 @@ const signUp = asyncHandler(async (request: Request, response: Response) => {
 @params = userName or email, password
 */
 const login = asyncHandler(async (request: Request, response: Response) => {
-  const { userName, email, password } = request.body;
+  const { userId, password } = request.body;
 
-  if ((!userName && !email) || !password) {
+  if (!userId || !password) {
     return response.status(statusCodes.ALL_FEILDS_REQURED).json({
       message:
         "All parameters are required -- either (userName & password) or (email &password)",
       parameters: "userName or email, password",
     });
   }
+  const userName = userId;
+  const email = userId;
 
   const user = await User.findOne({
     $or: [{ email }, { userName }],
@@ -180,6 +183,49 @@ const logout = asyncHandler(async (request: Request, response: Response) => {
 });
 
 /*
+@refreshing the access token
+@get request
+@params = cookies
+*/
+const refreshAccessToken = asyncHandler(
+  async (request: Request, response: Response) => {
+    const cookies = request.cookies;
+
+    if (!cookies.refreshToken) {
+      return response.status(statusCodes.NOT_FOUND).json({
+        message: "Cookie / Refresh token not found",
+      });
+    }
+
+    const refreshToken = cookies.refreshToken;
+
+    const decoded = jwt.verify(
+      refreshToken,
+      `${process.env.REFRESH_TOKEN_SECRET}`
+    ) as { id: string };
+
+    const userData = await User.findById(decoded.id);
+
+    if (!userData) {
+      return response.status(statusCodes.USER_NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    const newAccessToken: string = jwt.sign(
+      { id: userData._id },
+      `${process.env.ACCESS_TOKEN_SECRET}`,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    );
+
+    response.status(statusCodes.SUCCESS).json({
+      message: "New access token generated successfully",
+      accessToken: newAccessToken,
+    });
+  }
+);
+
+/*
 @get current user
 @get request
 @params = none
@@ -202,4 +248,4 @@ const getCurrentUser = asyncHandler(
   }
 );
 
-export { signUp, login, logout, getCurrentUser };
+export { signUp, login, logout, refreshAccessToken, getCurrentUser };
