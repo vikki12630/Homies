@@ -28,7 +28,7 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<UserData>) => {
+    login: (state, action: PayloadAction<Partial<UserData>>) => {
       const {
         token,
         _id,
@@ -41,14 +41,17 @@ const userSlice = createSlice({
         isAuthenticated,
       } = action.payload;
 
-      state.token = token;
-      state._id = _id;
-      state.name = name;
-      state.userName = userName;
-      state.email = email;
-      state.profileImg = profileImg;
-      state.followers = followers;
-      state.following = following;
+      if (token !== undefined) state.token = token || state.token;
+      if (_id !== undefined) state._id = _id || state._id;
+      if (name !== undefined) state.name = name || state.name;
+      if (userName !== undefined) state.userName = userName || state.userName;
+      if (email !== undefined) state.email = email || state.email;
+      if (profileImg !== undefined)
+        state.profileImg = profileImg || state.profileImg;
+      if (followers !== undefined)
+        state.followers = followers || state.followers;
+      if (following !== undefined)
+        state.following = following || state.following;
       state.isAuthenticated = isAuthenticated ?? true;
     },
 

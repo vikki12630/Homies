@@ -7,6 +7,8 @@ import useAxiosPrivate from "./hooks/useAxiosPrivate";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./hooks/reduxHooks";
 import { login } from "./storeAndSlices/userSlice";
+import AppLayout from "./components/AppLayout";
+import Messages from "./pages/Messages";
 
 function App() {
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ function App() {
           isAuthenticated: true,
         })
       );
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
@@ -43,11 +45,13 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-
-      <Route path="/" element={<AuthLayout />}>
-        <Route path="/home" element={<Home />} />
+      <Route path="/" element={<AppLayout />}>
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<SignUp />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/messages" element={<Messages />} />
+        </Route>
       </Route>
     </Routes>
   );

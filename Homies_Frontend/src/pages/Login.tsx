@@ -37,7 +37,6 @@ const Login = () => {
       );
       dispatch(
         login({
-          ...user,
           token: response?.data?.accessToken,
           _id: response?.data?.userData?._id,
           name: response?.data?.userData?.name,

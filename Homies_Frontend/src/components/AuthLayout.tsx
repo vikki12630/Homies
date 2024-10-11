@@ -3,11 +3,11 @@ import { useAppSelector } from "../hooks/reduxHooks"
 
 const AuthLayout = () => {
   const location = useLocation()
-  const token = useAppSelector(state => state.user.token)
+  const token = useAppSelector(state => state.user._id)
   return token ? (
     <Outlet />
   ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
+    <Navigate to="login" state={{ from: location }} replace />
   ); 
 }
 
