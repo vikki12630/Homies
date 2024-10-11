@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios, { axiosPrivate } from "../api/axiosInstance";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { login } from "../storeAndSlices/userSlice";
+import { accessToken } from "../storeAndSlices/userSlice";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean; // Optional property for tracking retries
@@ -9,19 +9,14 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 const useAxiosPrivate = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
+  // const user = useAppSelector((state) => state.user);
   const token = useAppSelector((state) => state.user.token);
   const refresh = async () => {
     const config = {
       withCredentials: true,
     };
     const response = await axios.get("users/refreshaccesstoken", config);
-    dispatch(
-      login({
-        ...user,
-        token: response?.data?.accessToken,
-      })
-    );
+    dispatch(accessToken(response?.data?.accessToken));
     return response;
   };
 
@@ -51,8 +46,8 @@ const useAxiosPrivate = () => {
         previousRequest._retry = true;
         try {
           const newAccessToken = await refresh();
-          console.log(newAccessToken);
-          previousRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          // console.log(newAccessToken?.data.accessToken);
+          previousRequest.headers.Authorization = `Bearer ${newAccessToken?.data.accessToken}`;
           return axiosPrivate(previousRequest);
         } catch (error) {
           console.log(error);

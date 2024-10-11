@@ -1,15 +1,14 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../hooks/reduxHooks";
-import { login } from "../storeAndSlices/userSlice";
+import { useAppDispatch } from "../hooks/reduxHooks";
+import { accessToken, auth, setUser } from "../storeAndSlices/userSlice";
 import axios from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
-
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
+  // const user = useAppSelector((state) => state.user);
   const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -35,20 +34,10 @@ const Login = () => {
         { userId, password },
         config
       );
-      dispatch(
-        login({
-          token: response?.data?.accessToken,
-          _id: response?.data?.userData?._id,
-          name: response?.data?.userData?.name,
-          userName: response?.data?.userData?.userName,
-          email: response?.data?.userData?.email,
-          profileImg: response?.data?.userData?.profileImg,
-          followers: response?.data?.userData?.follower,
-          following: response?.data?.userData?.following,
-          isAuthenticated: true,
-        })
-      );
-      navigate("/home")
+      dispatch(auth(true));
+      dispatch(accessToken(response?.data.accessToken));
+      dispatch(setUser(response?.data?.userData));
+      navigate("/");
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       if (err.response) {
