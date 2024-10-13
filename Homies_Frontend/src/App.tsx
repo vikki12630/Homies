@@ -9,6 +9,7 @@ import { useAppDispatch } from "./hooks/reduxHooks";
 import { auth, setUser } from "./storeAndSlices/userSlice";
 import AppLayout from "./components/AppLayout";
 import Messages from "./pages/Messages";
+import { IUserData } from "./storeAndSlices/userSlice";
 
 function App() {
   const navigate = useNavigate();
@@ -18,9 +19,20 @@ function App() {
   const getCurrentUser = async () => {
     try {
       const response = await axiosPrivate.get("users/getcurrentuser");
-      // console.log(response?.data.userData);
-      dispatch(auth(true));
-      dispatch(setUser(response?.data.userData));
+      const data: IUserData = {
+        userData: {
+          _id: response?.data.userData._id,
+          name: response?.data.userData.name,
+          userName: response?.data.userData.userName,
+          email: response?.data.userData.email,
+          profileImg: response?.data.userData.profileImg,
+          followers: response?.data.userData.followers,
+          following: response?.data.userData.following,
+        },
+        isAuthenticated: true,
+      };
+      dispatch(auth(data.isAuthenticated));
+      dispatch(setUser(data.userData));
       navigate("/");
     } catch (error) {
       console.log(error);

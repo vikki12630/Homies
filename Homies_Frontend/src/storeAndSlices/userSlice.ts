@@ -1,7 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  userData: null,
+export interface IUserData {
+  userData?: {
+    _id: string | null;
+    name: string | null;
+    userName: string | null;
+    email: string | null;
+    profileImg: string | null;
+    followers: string | null;
+    following: string | null;
+  };
+  token?: string | null;
+  isAuthenticated?: boolean;
+}
+
+const initialState: IUserData = {
+  userData: {
+    _id: null,
+    name: null,
+    userName: null,
+    email: null,
+    profileImg: null,
+    followers: null,
+    following: null,
+  },
   token: null,
   isAuthenticated: false,
 };
@@ -23,9 +45,9 @@ const userSlice = createSlice({
     },
 
     logout: (state) => {
-      state.token = null;
-      state.userData = null;
-      state.isAuthenticated = false;
+      state.token = initialState.token;
+      state.userData = initialState.userData;
+      state.isAuthenticated = initialState.isAuthenticated;
     },
   },
 });

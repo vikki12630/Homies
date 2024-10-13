@@ -3,7 +3,7 @@ import { useAppSelector } from "../hooks/reduxHooks"
 
 const AuthLayout = () => {
   const location = useLocation()
-  const {isAuthenticated} = useAppSelector(state => state.user)
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
   return isAuthenticated ? (
     <Outlet />
   ) : (

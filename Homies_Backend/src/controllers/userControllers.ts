@@ -16,7 +16,8 @@ const signUp = asyncHandler(async (request: Request, response: Response) => {
 
   if (!name || !userName || !email || !password) {
     return response.status(statusCodes.ALL_FEILDS_REQURED).json({
-      message: "All parameters are required",
+      message:
+        "All parameters are required -- name, userName, email, password ",
       parameters: "name, userName, email, password",
     });
   }

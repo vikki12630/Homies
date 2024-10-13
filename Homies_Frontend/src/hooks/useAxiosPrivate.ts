@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios, { axiosPrivate } from "../api/axiosInstance";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { accessToken } from "../storeAndSlices/userSlice";
+import { accessToken, IUserData } from "../storeAndSlices/userSlice";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean; // Optional property for tracking retries
@@ -16,7 +16,10 @@ const useAxiosPrivate = () => {
       withCredentials: true,
     };
     const response = await axios.get("users/refreshaccesstoken", config);
-    dispatch(accessToken(response?.data?.accessToken));
+    const data: IUserData = {
+      token: response?.data.accessToken,
+    };
+    dispatch(accessToken(data.token));
     return response;
   };
 

@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -19,11 +19,11 @@ const userSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImg: { type: String, default: "" },
-    follower: { type: [String], default: [] },
+    followers: { type: [String], default: [] },
     following: { type: [String], default: [] },
   },
   { timestamps: true }
 );
 
-// export const User:Model<IUser> = mongoose.model("User", userSchema)
-export const User = mongoose.model<IUser>("User", userSchema);
+export const User:Model<IUser> = mongoose.model<IUser>("User", userSchema)
+// export const User = mongoose.model<IUser>("User", userSchema);

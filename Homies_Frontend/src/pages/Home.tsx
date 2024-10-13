@@ -4,16 +4,16 @@ import { useAppDispatch } from "../hooks/reduxHooks";
 import { logout } from "../storeAndSlices/userSlice";
 
 const Home = () => {
-  const axiosPrivate = useAxiosPrivate()
-  const navigate = useNavigate()
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const logoutUser = async () => {
     try {
       const response = await axiosPrivate.get("users/logout");
       console.log(response);
-      dispatch(logout())
-      navigate("/login")
+      dispatch(logout());
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -27,6 +27,6 @@ const Home = () => {
       <Link to={"/messages"}>messages</Link>
     </div>
   );
-}
+};
 
-export default Home
+export default Home;
